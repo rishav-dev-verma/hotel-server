@@ -35,6 +35,16 @@ export default async ({ expressApp }:any ): Promise<void> => {
       model: require("../models/Comment").default,
     };
 
+    const roleModel={
+      name:"roleModel",
+      model: require("../models/Role")
+    };
+
+    const permissionModel={
+      name:"permissionModel",
+      model: require("../models/Permission")
+    }
+
     
 
     await dependencyInjector(
@@ -43,7 +53,9 @@ export default async ({ expressApp }:any ): Promise<void> => {
           userModel, 
           refreshTokenModel,
           feedModel,
-          commentModel
+          commentModel,
+          roleModel,
+          permissionModel
         ] 
       });
 

@@ -3,6 +3,8 @@ import { IComment } from '../../Interface/IComment';
 import { IFeed } from '../../Interface/IFeed';
 import IRefreshToken from '../../Interface/IRefreshToken';
 import { IUser } from '../../Interface/IUser';
+import { IRoles } from '../../Interface/IRoles';
+import { IPermisisons } from '../../Interface/IPermisisons';
 declare global{
 
   
@@ -14,6 +16,8 @@ declare global{
        export type RefreshTokeModel=Model<IRefreshToken & Document>
        export type FeedModel = Model<IFeed & Document>
        export type CommentModel = Model<IComment & Document>
+       export type RoleModel=Model<IRoles & Document>
+       export type PermissionModel=Model<IPermissions & Document>
 
     }
 }
