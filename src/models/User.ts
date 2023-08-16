@@ -52,6 +52,16 @@ const User = new mongoose.Schema(
   }
 );
 
+
+User.set('toJSON',{
+  virtuals:true,
+  versionKey:true,
+  transform:(doc,ret) => {
+      delete ret.password,
+      delete ret.salt
+  }
+})
+
 User.pre('save',async function(next){
     if (!this.isModified("password")) return next();
 
