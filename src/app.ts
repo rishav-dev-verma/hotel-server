@@ -5,6 +5,8 @@ import config from "./config";
 import express from "express";
 import Logger from "./loaders/logger";
 
+import socketIOHandlers from '../socketIOHandlers/index';
+
 
 
 
@@ -26,5 +28,19 @@ async function startserver() {
        Logger.error(err);
        process.exit(1);
     });
+
+    console.log(server);
+
+
+    const io = require('socket.io')(server,{
+      cors:{
+        origin:"*",
+        methods:["GET","POST"]
+      }
+    });
+
+    socketIOHandlers(io);
+
+    
 }
 startserver();
