@@ -58,7 +58,7 @@ export class AuthService {
         email: user.email,
       },
       this.privateKey,
-      { algorithm: "RS256", expiresIn: "30d" }
+      { algorithm: "RS256", expiresIn: "15m" }
     );
   }
 
@@ -143,7 +143,8 @@ export class AuthService {
       await this.removeRefreshToken(refreshTokenInput.refreshToken);
 
       const refreshToken = await this.generateRefreshToken(user);
-      return { token, refreshToken };
+
+      return { user,token, refreshToken };
     } catch (e) {
       throw e;
     }
@@ -178,3 +179,4 @@ export class AuthService {
     ]) 
   }
 }
+

@@ -96,8 +96,9 @@ export default (app:Router) => {
       async(req:Request,res:Response,next:NextFunction) => {
         try {
           const authServiceContainer = Container.get(AuthService);
-          const {token,refreshToken} = await authServiceContainer.refreshToken(req.body);
-          res.status(200).json({token,refreshToken});
+          const {user,token,refreshToken} = await authServiceContainer.refreshToken(req.body);
+          res.status(200).json({user,
+            token,refreshToken});
         }catch(e) {
           throw e;
         }
