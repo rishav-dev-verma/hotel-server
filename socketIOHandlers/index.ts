@@ -18,7 +18,6 @@ export default (io:Server) => {
         
 
          socket.on('new_message',(data) => {
-            console.log(data);
              socket.emit('new_message', data);
             
          });

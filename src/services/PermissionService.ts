@@ -10,7 +10,7 @@ export class PermissionService {
     }
 
 
-    public async createPermision(IPermissionsDTO: IPermissionsDTO):Prmosie<{permission:IPermissions,message:string}>
+    public async createPermision(IPermissionsDTO: IPermissionsDTO):Promise<{permission:IPermissions,message:string}>
     {
         try {
             const permissionObj = await this.permissionModel.create({...IPermissionsDTO});
@@ -31,10 +31,7 @@ export class PermissionService {
 
     public async updatePermission(permisisonId,IPermissionDTO):Promise<{permission:IPermissions,message:string}> {
         try {
-            const permission=this.permissionModel.findByIdAndUpdate(permisisonId,{...IPermissionDTO},{
-                new:true,
-                runValidators:true
-            });
+            const permission=await this.permissionModel.findOneAndUpdate(permisisonId,IPermissionDTO,{new:true,runValidators:true});
 
             if(!permission) {
                 throw new Error('Unable to update the permisison');
@@ -48,7 +45,7 @@ export class PermissionService {
 
     public async fetchPermission(permisisonId:string):Promise<{permission:IPermissions,message:string}> {
         try {
-            const permission=this.permissionModel.findById(permisisonId);
+            const permission:any=await this.permissionModel.findById(permisisonId);
 
             if(!permission) {
                 throw new Error('Unable to update the permisison');
@@ -64,11 +61,8 @@ export class PermissionService {
 
     public async fetchAllPermissions(): Promise<{permissions:[{IPermissions}],message:string}>{
         try {
-            const permissions:any=this.permissionModel.find({name:1,description:1});
+            const permissions:any=await this.permissionModel.find().select("name description");
 
-            if(permissions.length === 0) {
-                throw new Error('Unable to update the permisison');
-            }
 
             return {permissions,message:"Permission updated successfully"};
         }catch(e){

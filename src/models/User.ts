@@ -13,19 +13,13 @@ const User = new mongoose.Schema(
       lowercase: true,
       index: { unique: true, dropDups: true },
     },
-    roleName:{
-      type:String,
-      enum:['Admin','Coach','Coachee'],
-      required:true,
-      default:'Coachee'
-    },
-    firstName: {
+    fullName: {
       type: String,
-      required: [true, "Please tell us your first name!"],
+      required: [true, "Please tell us your full name!"],
     },
-    lastName: {
-      type: String,
-      required:true
+
+    mobile:{
+      type:Number,
     },
     password: {
       type: String,

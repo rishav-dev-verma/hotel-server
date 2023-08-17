@@ -32,7 +32,7 @@ export default (app:Router) => {
        
     });
 
-    router.put('/',celebrate({
+    router.put('/:id',celebrate({
         [Segments.BODY]:Joi.object().keys({
             name:Joi.string().required(),
             description:Joi.string()
@@ -49,12 +49,23 @@ export default (app:Router) => {
     });
 
     router.get(
-      "/",
-      celebrate({
-        [Segments.PARAMS]: Joi.object().keys({
-          id: Joi.string().required()
-        }),
-      }),
+      "/all",
+      async (req: Request, res: Response, next: NextFunction) => {
+        try {
+          const permissionServiceInstance = Container.get(PermissionService);
+          console.log("This part");
+          const response = await permissionServiceInstance.fetchAllPermissions();
+          return res
+            .status(200)
+            .json(response);
+        } catch (e) {
+          next(e);
+        }
+      }
+    );
+
+    router.get(
+      "/:id",
       async (req: Request, res: Response, next: NextFunction) => {
         try {
           const permissionServiceInstance = Container.get(PermissionService);
@@ -65,22 +76,6 @@ export default (app:Router) => {
           return res
             .status(200)
             .json({ permission: permission, message: message, code: 200 });
-        } catch (e) {
-          next(e);
-        }
-      }
-    );
-
-    router.get(
-      "/all",
-      async (req: Request, res: Response, next: NextFunction) => {
-        try {
-          const permissionServiceInstance = Container.get(PermissionService);
-          const response =
-            await permissionServiceInstance.fetchAllPermissions();
-          return res
-            .status(200)
-            .json(response);
         } catch (e) {
           next(e);
         }

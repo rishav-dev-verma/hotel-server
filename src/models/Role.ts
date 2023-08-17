@@ -1,5 +1,7 @@
-import mongoose, { Schema, SchemaType } from "mongoose";
+import mongoose from "mongoose";
 import { IRoles } from "../Interface/IRoles";
+
+const Schema = mongoose.Schema;
 
 
 const Roles= new mongoose.Schema({
@@ -10,7 +12,7 @@ const Roles= new mongoose.Schema({
         description:{
             type:String
         },
-        permissions:[{type:Schema.Types.ObjectId,ref:'Permisisons'}]
+        permissions:[{type:Schema.Types.ObjectId,ref:'Permission'}]
 
     },
     {

@@ -37,17 +37,17 @@ export default async ({ expressApp }:any ): Promise<void> => {
 
     const roleModel={
       name:"roleModel",
-      model: require("../models/Role")
+      model: require("../models/Role").default
     };
 
     const permissionModel={
       name:"permissionModel",
-      model: require("../models/Permission")
+      model: require("../models/Permission").default
     }
 
     
 
-    await dependencyInjector(
+    dependencyInjector(
       { models: 
         [
           userModel, 

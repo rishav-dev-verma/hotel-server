@@ -4,7 +4,7 @@ import { IFeed } from '../../Interface/IFeed';
 import IRefreshToken from '../../Interface/IRefreshToken';
 import { IUser } from '../../Interface/IUser';
 import { IRoles } from '../../Interface/IRoles';
-import { IPermisisons } from '../../Interface/IPermisisons';
+import { IPermissions } from '../../Interface/IPermissions';
 declare global{
 
   
