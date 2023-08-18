@@ -21,6 +21,7 @@ const User = new mongoose.Schema(
     mobile:{
       type:Number,
     },
+    roles:[{type:Schema.Types.ObjectId,ref:'Roles'}],
     password: {
       type: String,
       required:true,
@@ -43,6 +44,7 @@ const User = new mongoose.Schema(
   },
   {
     timestamps: true,
+    strictPopulate: false
   }
 );
 

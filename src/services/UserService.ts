@@ -40,19 +40,28 @@ export class UserService {
       }
     }
 
-    public async fetchUser(userId,userInputDTO:IUserInputDTO):Promise<{user:IUser,message:string}>{
+    public async assignRoles(userId,roleInput):Promise<{data:null,message:string}> {
       try {
-        const user = (await this.userModel.findById(userId)).populate({
+        const roleObj={roles:roleInput.roles};
+
+        await this.userModel.findByIdAndUpdate(userId,roleObj);
+
+        return {data:null,message:'Role assigned successfully'};
+      }catch(e){
+        throw e;
+      }
+    }
+
+    public async fetchUser(userId):Promise<{user:IUser,message:string}>{
+      try {
+        const user = await this.userModel.findById(userId).populate({
           path:"roles",
-          select:"name description",
-          populate:{path:"permission",select:"name description"}
+          select:"name description"
         }).select("fullName email mobile");
 
-        if(!user){
-          throw new Error("Cannot update user");
-        }
+       
 
-        return {user,message:"User updated succesfully"};
+        return {user,message:"User fetched succesfully"};
       }catch(e){
         throw e;
       }
@@ -62,18 +71,18 @@ export class UserService {
         const users = await this.userModel.aggregate([
           {
             $lookup: {
-              from: "Roles",
+              from: "roles",
               localField: "roles",
               foreignField: "_id",
               as: "user_roles",
             },
           },
           {
-            $unwind: "user_roles",
+            $unwind: "$user_roles",
           },
           {
             $lookup: {
-              from: "Permissions",
+              from: "permissions",
               localField: "user_roles.permissions",
               foreignField: "_id",
               as: "role_permissions",
@@ -87,7 +96,27 @@ export class UserService {
                 roles:{$push:"$user_roles"},
                 permissions:{$addToSet:"$role_permissions.name"}
             }
-          }
+          },
+          {
+            $project: {
+              _id: 1,
+              fullName: 1,
+              email: 1,
+              roles: {
+                $map: {
+                  input: "$roles",
+                  as: "role",
+                  in: {
+                    _id: "$$role._id",
+                    _name: "$$role.name",
+                    // Copy other properties from role except permissions
+                    // ...
+                    permissions: "$permissions",
+                  },
+                },
+              },
+            },
+          },
         ]);
 
         return{users,message:"Users fetched successfully"};
