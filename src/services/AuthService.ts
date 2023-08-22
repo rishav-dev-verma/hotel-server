@@ -25,7 +25,9 @@ export class AuthService {
     userInputDTO: IUserInputDTO
   ): Promise<{ user: IUser; token: any; refreshToken: any; message: string }> {
     try {
-      const userRecord = await this.userModel.create({ ...userInputDTO });
+      const userRecord = await this.userModel.create({ ...userInputDTO});
+
+      
 
       if (!userRecord) {
         throw new Error("unable to create user");
@@ -34,6 +36,8 @@ export class AuthService {
       //userRecord.password = undefined;
 
       const user = userRecord.toObject();
+
+      await this.userModel.assignDefaultRole(user._id);
 
       const token = this.generateToken(user);
       const refershToken = await this.generateRefreshToken(user);

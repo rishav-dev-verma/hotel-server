@@ -94,7 +94,8 @@ export class UserService {
                 fullName:{$first:"$fullName"},
                 email:{$first:"$email"},
                 roles:{$push:"$user_roles"},
-                permissions:{$addToSet:"$role_permissions.name"}
+                permissions:{$addToSet:"$role_permissions.name"},
+                allPermissionIds:{$addToSet:"$role_permissions._id"}
             }
           },
           {
@@ -108,13 +109,43 @@ export class UserService {
                   as: "role",
                   in: {
                     _id: "$$role._id",
-                    _name: "$$role.name",
                     // Copy other properties from role except permissions
                     // ...
-                    permissions: "$permissions",
+                    name: "$$role.name",
+                    description: "$$role.description",
                   },
                 },
               },
+              permissions: {
+                $reduce: {
+                  input: "$permissions",
+                  initialValue: [],
+                  in: { $concatArrays: ["$$value", "$$this"] },
+                },
+              },
+              allPermissionIds:{
+                $reduce: {
+                  input: "$allPermissionIds",
+                  initialValue: [],
+                  in: { $concatArrays: ["$$value", "$$this"] },
+                },
+              }
+            },
+          },
+          {
+            $unwind: "$permissions"
+          },
+          {
+            $unwind: "$allPermissionIds"
+          },
+          {
+            $group: {
+              _id: "$_id",
+              fullName: { $first: "$fullName" },
+              email: { $first: "$email" },
+              roles: { $first: "$roles" },
+              allpermissions: { $addToSet: "$permissions" }, // Remove duplicates
+              allpermissionsIds: { $addToSet: "$allPermissionIds" },
             },
           },
         ]);

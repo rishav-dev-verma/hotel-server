@@ -17,11 +17,10 @@ export default (app:Router) => {
       celebrate({
         [Segments.BODY]: Joi.object().keys({
           email: Joi.string().required().email(),
-          firstName: Joi.string().required(),
-          lastName: Joi.string().required(),
+          fullName: Joi.string().required(),
+          mobile: Joi.number().required(),
           password: Joi.string().required(),
           passwordConfirm: Joi.string().required(),
-          role: Joi.string().default("admin"),
         }),
       }),
       async (req: Request, res: Response, next: NextFunction) => {

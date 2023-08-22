@@ -3,6 +3,7 @@ import { IUser } from "../Interface/IUser";
 import bcrypt from 'bcrypt'
 import { randomBytes } from "crypto";
 import argon2 from "argon2";
+import Role from "./Role";
 
 const Schema = mongoose.Schema;
 
@@ -76,6 +77,17 @@ User.pre("save", function (next) {
   next();
 });
 
+User.statics.assignDefaultRole=async function(userId){
+  try {
+    const defaultRole='admin';
+    
+    const roleDetails=await Role.findOne({name:defaultRole});
 
+
+    await this.findByIdAndUpdate(userId,{$addToSet:{roles:roleDetails._id}});
+  }catch(e){
+    throw e;
+  }
+}
 
 export default  mongoose.model<IUser & mongoose.Document>("User", User);

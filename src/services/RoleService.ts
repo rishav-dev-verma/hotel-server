@@ -32,7 +32,9 @@ export class RoleService {
     try {
       const roleDoc = await this.roleModel.findByIdAndUpdate(
         roleId,
-        { ...roleInputDto },
+        {
+          ...roleInputDto
+        },
         {
           new: true,
           runValidators: true,
@@ -50,6 +52,26 @@ export class RoleService {
       throw e;
     }
   }
+
+
+  public async syncRoles(roleId:string,roleInput): Promise<{data:null,message:string}> {
+
+    try {
+
+      await this.roleModel.findByIdAndUpdate(roleId,
+        {$addToSet:{roles:{$each:roleInput.roles}}}
+      ,{new:true});
+
+      return {data:null,message:"Permissions synced successfully"};
+
+    }catch(e){
+
+      throw e;
+    }
+
+  }
+
+  
 
   public async fetchRole(
     roleId: any

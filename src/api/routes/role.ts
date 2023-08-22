@@ -2,6 +2,7 @@ import { RoleService } from './../../services/RoleService';
 import { Joi, Segments, celebrate } from "celebrate";
 import { NextFunction, Request, Response, Router } from "express";
 import Container from 'typedi';
+import Role from '../../models/Role';
 
 
 
@@ -49,6 +50,24 @@ export default (app:Router) => {
         }
       }
     );
+
+    router.patch('/:id',celebrate({
+      [Segments.BODY] : Joi.object({
+        permissions: Joi.array().required(),
+      }),
+      [Segments.PARAMS]: Joi.object({
+        id: Joi.string().required(),
+      }),
+    }),async(req:Request,res:Response,next:NextFunction) => {
+      try {
+        const roleServiceInstance=Container.get(RoleService);
+        const response=await roleServiceInstance.syncRoles(req.params.id,req.body);
+        return res.status(200).json(response);
+      }catch(e){
+        throw e;
+      }
+
+    })
 
     router.get(
       "/all",
